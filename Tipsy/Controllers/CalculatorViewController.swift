@@ -45,21 +45,17 @@ class CalculatorViewController: UIViewController {
     }
     
     @IBAction func calculatePressed(_ sender: UIButton) {
-        let inputBill = Double(billTextField.text!)
-        if inputBill != nil {
-            let splitBill = inputBill! * (1+tip) / splitNumber
-            calcresult = String(format: "%.2f", splitBill)
-        }
+        guard let bill = billTextField.text, let inputBill = Double(bill) else { return }
+        let splitBill = inputBill * (1+tip) / splitNumber
+        calcresult = String(format: "%.2f", splitBill)
         performSegue(withIdentifier: "goToResult", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goToResult" {
-            let destinationVC = segue.destination as! ResultsViewController
-            destinationVC.total = calcresult
-            destinationVC.tip = Int(tip*100)
-            destinationVC.splitNumber = Int(splitNumber)
-        }
+        guard segue.identifier == "goToResult",let destinationVC = segue.destination as? ResultsViewController else { return }
+        destinationVC.total = calcresult
+        destinationVC.tip = Int(tip*100)
+        destinationVC.splitNumber = Int(splitNumber)
     }
     
 }
